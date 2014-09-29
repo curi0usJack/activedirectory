@@ -25,45 +25,51 @@ When the script is run with a remediate flag is run, it creates a GPO called "Do
 ![Image 1](http://i.imgur.com/BLxA7VK.jpg "Image 1")
 
 
-Additionally, it will also create a fine grained password policy object
-and apply it to your Domain Admins:
+Additionally, it will also create a fine grained password policy object and apply it to your Domain Admins:
 
 ![Image 2](http://i.imgur.com/9qYHuNf.png "Image 2")
 
 
 The password policy object is configured with the following parameters:
 
-Minimum Password Length:     12 characters
-Maximum Password Age:        30 Days
-Complexity Enabled:                Yes
- Lockout Attempts:                   5 Bad Attempts in 24 Hours.
-Lockout Duration:                    Forever
-Password Remembered:         10
-Minimum Password Age:         3 Days
+Parameter | Value
+| --- | --- |
+| Minimum Password Length: | 12 characters |
+| Maximum Password Age:    | 30 Days |
+| Complexity Enabled:      | Yes |
+| Lockout Attempts:        | 5 Bad Attempts in 24 Hours. |
+| Lockout Duration:        | Forever |
+| Password Remembered:     | 10 |
+| Minimum Password Age:    | 3 Days |
  
 
-PRE-REQUISITES
+###PRE-REQUISITES
 
-There are several prereqs:
+#####There are several prereqs:
 
-It must be running on a Domain Controller.
-It must run as a Domain Admin.
-The ActiveDirectory and GroupPolicy cmdlets must be available (install RSAT).
-It must be able to write files to your $env:TEMP directory. Normally this is C:\Users\USERID\AppData\Local\Temp. 
-Note that a log is written for every DLD run and is saved to the current working directory.
++ It must be running on a Domain Controller.
++ It must run as a Domain Admin.
++ The ActiveDirectory and GroupPolicy cmdlets must be available (install RSAT).
++ It must be able to write files to your $env:TEMP directory. Normally this is C:\Users\USERID\AppData\Local\Temp. 
 
-There are four switches in DLD:
+(Note that a log is written for every DLD run and is saved to the current working directory.)
 
-[-evaluate]  The evaluate switch is a read-only check against your Domain. No changes are performed. Evaluate does a few things:
-It evaluates the password policy that is in place for your DAs.
-It looks at the number of DA accounts and gives feedback. This was obviously a judgement call on my part, but suffice to say I believe strongly that the less DA accounts there are, the better.
-It checks to see where the DA accounts can login to and gives feedback if it's anywhere but DCs (read Part 1 to understand why).
-It looks to see if anyone other than DAs and Enterprise Admins can login to DCs (via the Builtin\Administrators group). 
-It checks if null sessions are enabled on your Domain and will list any currently connected null sessions.
-It checks to see if credential caching is enabled on your Domain.
-[-remediate]  The remediate switch will make changes to your domain, however you are prompted for each change:
-It will add the password policy described above.
-It unzips the DLD gpo & links it to the Domain Controllers OU. Note that creating the GPO and linking it are separate prompts. 
-It will restrict your DAs to only be able to login to DCs. You are prompted for changes to each DA.
-[-undo]  The undo switch will delete the password policy and the DomainLockDown GPO. It will not modify any changes to your DA accounts.
-[-deathblossum]  The deathblossum switch does everything remediate does, except that it will only ask you once for confirmation (type in YES, case-sensitive), then it goes to work. Use with caution! You've been warned.
+#####There are four switches in DLD:
+
+__[-evaluate]__  The evaluate switch is a read-only check against your Domain. No changes are performed. Evaluate does a few things:
++ It evaluates the password policy that is in place for your DAs.
++ It looks at the number of DA accounts and gives feedback. This was obviously a judgement call on my part, but suffice to say I believe strongly that the less DA accounts there are, the better.
++ It checks to see where the DA accounts can login to and gives feedback if it's anywhere but DCs (read Part 1 to understand why).
++ It looks to see if anyone other than DAs and Enterprise Admins can login to DCs (via the Builtin\Administrators group). 
++ It checks if null sessions are enabled on your Domain and will list any currently connected null sessions.
++ It checks to see if credential caching is enabled on your Domain.
+
+
+__[-remediate]__  The remediate switch will make changes to your domain, however you are prompted for each change:
++ It will add the password policy described above.
++ It unzips the DLD gpo & links it to the Domain Controllers OU. Note that creating the GPO and linking it are separate prompts. 
++ It will restrict your DAs to only be able to login to DCs. You are prompted for changes to each DA.
+
+__[-undo]__  The undo switch will delete the password policy and the DomainLockDown GPO. It will not modify any changes to your DA accounts.
+
+__[-deathblossum]__  The deathblossum switch does everything remediate does, except that it will only ask you once for confirmation (type in YES, case-sensitive), then it goes to work. Use with caution! You've been warned.
